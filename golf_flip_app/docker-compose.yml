@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  api:
+    build: .
+    container_name: golf_flip_api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./seen.db:/app/seen.db
+
+  worker:
+    build: .
+    container_name: golf_flip_worker
+    command: ["python", "-m", "golf_flip_app.worker"]
+    env_file:
+      - .env
+    depends_on:
+      - api
+    volumes:
+      - ./seen.db:/app/seen.db
